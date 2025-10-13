@@ -1,0 +1,17 @@
+CREATE OR REPLACE FUNCTION update_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = CURRENT_TIMESTAMP;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_update_users_timestamp
+BEFORE UPDATE ON users
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+CREATE TRIGGER trg_update_vehicles_timestamp
+BEFORE UPDATE ON vehicles
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+CREATE TRIGGER trg_update_bookings_timestamp
+BEFORE UPDATE ON bookings
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();

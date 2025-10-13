@@ -1,0 +1,104 @@
+create table users(id BIGSERIAL PRIMARY KEY,
+				  name VARCHAR(100) NOT NULL,
+				  phone VARCHAR(20) NOT NULL,
+				  email VARCHAR(100) UNIQUE NOT NULL,
+				  password VARCHAR(255) NOT NULL,
+				  role bigint references roles(id),
+				  license_no VARCHAR(100),
+				  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+				  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+				  is_active boolean default true
+				  );
+
+create table roles(
+		id bigserial primary key,
+		name varchar(50) unique not null
+);
+create table vehicles(id bigserial primary key ,
+					 owner_id bigint references users(id) on delete set null ,
+					 type bigint references vehicle_types(id),
+					 brand varchar(100) not null,
+					 model varchar(100) not null,
+					 registration_no varchar(100) unique not null ,
+					 fuel_type bigint references fuel_types(id),
+					 transmission varchar(50) not null,
+					 seat int ,
+					 price_per_hour decimal(10,2) ,
+					 price_per_day decimal(20,2) ,
+					 status bigint references vehicle_status(id),
+					 is_available boolean default true,
+					 created_at timestamp default current_timestamp,
+					 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+					 is_active boolean default true
+					 );
+create table vehicle_image(id bigserial primary key ,
+						   vehicle_id bigint references vehicles(id) on delete cascade,
+    					   image_url text not null,
+                           created_at timestamp default current_timestamp
+						);
+create table vehicle_status(
+	id bigserial primary key,
+	name varchar(50) unique not null
+);
+
+create table vehicle_types(
+		id bigserial primary key,
+		name varchar(50) unique not null
+);
+
+create table fuel_types(
+		id bigserial primary key,
+		name varchar(50) unique not null
+);
+
+create table bookings(id bigserial primary key,
+					 renter_id bigint not null references users(id) on delete set null,
+					 vehicle_id bigint not null references vehicles(id) on delete set null,
+					 status bigint references booking_status(id),
+					 start_time timestamp ,
+					 end_time timestamp,
+					 amount decimal (10,2),
+					 created_at timestamp default current_timestamp,
+					 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+					);
+
+create table booking_status(
+ 		id bigserial primary key,
+		name varchar(50) unique not null
+);
+
+create table ratings(id bigserial primary key,
+					user_id bigint references users(id) on delete set null,
+					vehicle_id bigint references vehicles(id) on delete cascade,
+					description varchar(255) ,
+					rating int check(rating between 1 and 5 ) ,
+					created_at timestamp default current_timestamp
+					
+					);
+
+create table report_status(
+		id bigserial primary key,
+		name varchar(50) unique not null
+);
+
+create table report(id bigserial primary key,
+					reporter_id bigint references users(id) on delete set null,
+					booking_id bigint references bookings(id) on delete set null,
+					status bigint references report_status(id),
+					description varchar(255),
+					created_at timestamp default current_timestamp					
+					);	
+
+create table notifications (
+		id bigserial primary key,
+		user_id bigint references users(id),
+		message varchar(250) not null,
+		type  varchar(20),
+		is_read boolean default false ,
+		created_at timestamp default current_timestamp
+);
+
+
+
+
+

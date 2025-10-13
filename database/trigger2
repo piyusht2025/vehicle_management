@@ -1,0 +1,23 @@
+CREATE OR REPLACE FUNCTION soft_delete()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.is_active = FALSE AND OLD.is_active = TRUE THEN
+    DELETE FROM vehicle_images WHERE vehicle_id = OLD.id;
+    DELETE FROM ratings WHERE vehicle_id = OLD.id;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER trg_soft_delete
+AFTER UPDATE ON vehicles
+FOR EACH ROW
+WHEN (OLD.is_active = TRUE AND NEW.is_active = FALSE)
+EXECUTE FUNCTION soft_delete();
+
+
+
+
+
+
