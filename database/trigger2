@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION soft_delete()
 RETURNS TRIGGER AS $$
 BEGIN
   IF NEW.is_active = FALSE AND OLD.is_active = TRUE THEN
-    DELETE FROM vehicle_images WHERE vehicle_id = OLD.id;
+    DELETE FROM vehicle_image WHERE vehicle_id = OLD.id;
     DELETE FROM ratings WHERE vehicle_id = OLD.id;
   END IF;
   RETURN NEW;

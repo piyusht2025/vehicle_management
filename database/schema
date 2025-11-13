@@ -4,7 +4,7 @@ create table users(id BIGSERIAL PRIMARY KEY,
 				  email VARCHAR(100) UNIQUE NOT NULL,
 				  password VARCHAR(255) NOT NULL,
 				  role bigint references roles(id),
-				  license_no VARCHAR(100),
+				  license_no VARCHAR(100) UNIQUE,
 				  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 				  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 				  is_active boolean default true
@@ -26,6 +26,7 @@ create table vehicles(id bigserial primary key ,
 					 price_per_hour decimal(10,2) ,
 					 price_per_day decimal(20,2) ,
 					 status bigint references vehicle_status(id),
+					 city_id bigint references city(id)
 					 is_available boolean default true,
 					 created_at timestamp default current_timestamp,
 					 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -58,10 +59,15 @@ create table bookings(id bigserial primary key,
 					 start_time timestamp ,
 					 end_time timestamp,
 					 amount decimal (10,2),
+					 pickup_city bigint references city(id)
 					 created_at timestamp default current_timestamp,
 					 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 					);
+alter table bookings add column pickup_city  bigint references city(id);
+alter table vehicles add column city_id bigint references city(id);
 
+create table city(id bigserial primary key,
+					name varchar(60) unique not null);
 create table booking_status(
  		id bigserial primary key,
 		name varchar(50) unique not null
@@ -99,6 +105,6 @@ create table notifications (
 );
 
 
-
-
-
+insert into city (name) values ('Gandhinagar'),('Ahmedabad'),('surat');
+insert into booking_status(name) values ('UNCONFIRMED'),('CONFIRMED');
+insert into booking_status(name) values ('PAID'),('COMPLETED');
