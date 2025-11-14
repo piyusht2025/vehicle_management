@@ -1,0 +1,46 @@
+.vehicle-registration-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #f5f7fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+h2 {
+  text-align: center;
+  color: #333;
+}
+.form-group {
+  margin-bottom: 15px;
+}
+label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 5px;
+}
+input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+button {
+  margin-top: 10px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #357abd;
+}
+.success {
+  color: green;
+  text-align: center;
+}
+.error {
+  color: red;
+  text-align: center;
+}

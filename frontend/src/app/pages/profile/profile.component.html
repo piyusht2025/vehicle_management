@@ -1,0 +1,36 @@
+<app-header></app-header>
+<div class="container py-5 d-flex justify-content-center">
+  <div class="card profile-card shadow-sm">
+    <div class="p-4" >
+      <h5 class="fw-semibold mb-3">Profile Details</h5>
+      <ul  class="list-group list-group-flush mb-3">
+        <li class="list-group-item d-flex justify-content-between">
+          <span class="text-muted">Full Name</span>
+          <span>{{ user.name }}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+          <span class="text-muted">Email</span>
+          <span>{{ user.email }}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+          <span class="text-muted">Phone</span>
+          <span>{{ user.phone }}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+          <span class="text-muted">License</span>
+          <span>{{ user.licenseNo }}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+          <span class="text-muted">Status</span>
+          <span class="fw-bold"
+                [ngClass]="user.isActive ? 'text-success' : 'text-danger'">
+            {{ user.active ? 'Active' : 'Inactive' }}
+          </span>
+        </li>
+      </ul>
+      <!-- <button class="btn btn-primary w-100" routerLink="/profile/edit">
+        Edit Profile
+      </button> -->
+    </div>
+  </div>
+</div>
