@@ -1,0 +1,31 @@
+.auth-container {
+  width: 350px;
+  margin: 60px auto;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #ccc;
+  text-align: center;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 5px;
+  border: 1px solid #aaa;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background: #2f7dfc;
+  border: none;
+  color: white;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: #999;
+}

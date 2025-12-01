@@ -1,21 +1,26 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-import { VehicleService } from '../../services/vehicle.service';
+import { VehicleService } from '../../../core/services/vehicle.service';
+import { AuthService } from 'src/app/core/services/auth.service';
 @Component({
   selector: 'app-vehicle-registration',
   templateUrl: './vehicle-registration.component.html',
-  styleUrls: ['./vehicle-registration.component.scss']
+  styleUrls: ['./vehicle-registration.component.scss'],
 })
 export class VehicleRegistrationComponent {
   vehicleForm!: FormGroup;
   successMessage = '';
   errorMessage = '';
-   selectedFiles: File[] = [];
+  selectedFiles: File[] = [];
   imagePreviews: string[] = [];
-  constructor(private fb: FormBuilder, private vehicleService: VehicleService) {}
+  constructor(
+    private fb: FormBuilder,
+    private vehicleService: VehicleService,
+    private authService: AuthService
+  ) {}
   ngOnInit(): void {
     this.vehicleForm = this.fb.group({
-      ownerId: ['', Validators.required],
+      ownerId: this.authService.getUserId(),
       type: ['', Validators.required],
       fuelType: ['', Validators.required],
       brand: ['', Validators.required],
@@ -26,7 +31,7 @@ export class VehicleRegistrationComponent {
       seat: ['', [Validators.required, Validators.min(1)]],
       pricePerHour: ['', Validators.required],
       pricePerDay: ['', Validators.required],
-      images: this.fb.array([this.fb.control('')])
+      images: this.fb.array([this.fb.control('')]),
     });
   }
   get images(): FormArray {
@@ -39,41 +44,42 @@ export class VehicleRegistrationComponent {
     this.images.removeAt(index);
   }
 
-   onFileSelected(event: any) {
+  onFileSelected(event: any) {
     this.selectedFiles = Array.from(event.target.files);
 
     this.imagePreviews = [];
-    this.selectedFiles.forEach(file => {
+    this.selectedFiles.forEach((file) => {
       const reader = new FileReader();
       reader.onload = (e: any) => this.imagePreviews.push(e.target.result);
       reader.readAsDataURL(file);
     });
   }
 
-   onSubmit() {
+  onSubmit() {
     if (this.vehicleForm.invalid) {
-      this.errorMessage = "Please fill all required fields.";
+      this.errorMessage = 'Please fill all required fields.';
       return;
     }
 
     this.vehicleService.registerVehicle(this.vehicleForm.value).subscribe({
       next: (vehicle) => {
         const vehicleId = vehicle.id;
-        this.successMessage = "Vehicle registered successfully! Uploading images...";
+        this.successMessage =
+          'Vehicle registered successfully! Uploading images...';
 
         if (this.selectedFiles.length > 0) {
-          this.selectedFiles.forEach(file => {
+          this.selectedFiles.forEach((file) => {
             this.vehicleService.uploadImage(vehicleId, file).subscribe({
-              next: () => console.log("Image uploaded successfully"),
-              error: (err) => console.error("Image upload failed", err)
+              next: () => console.log('Image uploaded successfully'),
+              error: (err) => console.error('Image upload failed', err),
             });
           });
         }
       },
       error: (err) => {
         console.error(err);
-        this.errorMessage = "Vehicle registration failed.";
-      }
+        this.errorMessage = 'Vehicle registration failed.';
+      },
     });
   }
 }

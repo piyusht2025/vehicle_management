@@ -59,7 +59,7 @@ create table bookings(id bigserial primary key,
 					 start_time timestamp ,
 					 end_time timestamp,
 					 amount decimal (10,2),
-					 pickup_city bigint references city(id)
+					 pickup_city bigint references city(id),
 					 created_at timestamp default current_timestamp,
 					 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 					);
@@ -108,3 +108,5 @@ create table notifications (
 insert into city (name) values ('Gandhinagar'),('Ahmedabad'),('surat');
 insert into booking_status(name) values ('UNCONFIRMED'),('CONFIRMED');
 insert into booking_status(name) values ('PAID'),('COMPLETED');
+insert into booking_status(name) values ('REJECTED');
+insert into booking_status(name) values ('CANCELLED');

@@ -1,26 +1,25 @@
 package com.poc.backend.service;
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.poc.backend.dto.booking.BookingRequestDto;
 import com.poc.backend.dto.booking.BookingResponseDto;
-import com.poc.backend.entity.Booking;
-import com.poc.backend.entity.BookingStatus;
-import com.poc.backend.entity.User;
-import com.poc.backend.entity.Vehicle;
+import com.poc.backend.entity.*;
 import com.poc.backend.exception.ResourceNotFoundException;
 import com.poc.backend.mapper.BookingMapper;
-import com.poc.backend.repository.BookingRepo;
-import com.poc.backend.repository.BookingStatusRepo;
-import com.poc.backend.repository.UserRepo;
-import com.poc.backend.repository.VehicleRepo;
+import com.poc.backend.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@Service
+@Service("bookingService")
 @RequiredArgsConstructor
 public class BookingService {
     @Autowired
@@ -29,11 +28,15 @@ public class BookingService {
     private final VehicleRepo vehicleRepo;
     @Autowired
     private final UserRepo userRepo;
-
-    @Autowired
-    BookingStatusRepo bookingStatusRepo;
     @Autowired
     private final BookingMapper bookingMapper;
+    @Autowired
+    private final VehicleService vehicleService;
+    @Autowired
+    private final VehicleStatusRepo vehicleStatusRepo;
+    @Autowired
+    BookingStatusRepo bookingStatusRepo;
+
 
     @Transactional
     public BookingResponseDto addBooking(BookingRequestDto dto) {
@@ -43,7 +46,7 @@ public class BookingService {
         Vehicle vehicle = vehicleRepo.findById(dto.getVehicleId())
                 .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with id: " + dto.getVehicleId()));
 
-        if (!Boolean.TRUE.equals(vehicle.getAvailable())) {
+        if (vehicle.getStatus().getId() != 1) {
             throw new IllegalStateException("Vehicle is currently not available for booking.");
         }
 
@@ -53,12 +56,15 @@ public class BookingService {
 
         BookingStatus status = bookingStatusRepo.findByName("unconfirmed".toUpperCase())
                 .orElseThrow(() -> new ResourceNotFoundException("Booking status 'UNCONFIRMED' not found."));
-
         Booking booking = new Booking();
         booking.setRenter(renter);
         booking.setVehicle(vehicle);
-        booking.setStartTime(dto.getStartTime());
-        booking.setEndTime(dto.getEndTime());
+
+        //parsing the date time from utc to local
+        LocalDateTime normalizedStart = normalizeToIST(dto.getStartTime());
+        LocalDateTime normalizedEnd = normalizeToIST(dto.getEndTime());
+        booking.setStartTime(normalizedStart);
+        booking.setEndTime(normalizedEnd);
         booking.setAmount(dto.getAmount());
         booking.setStatus(status);
         booking.setCreatedAt(LocalDateTime.now());
@@ -70,5 +76,124 @@ public class BookingService {
         vehicleRepo.save(vehicle);
 
         return bookingMapper.toDto(savedBooking);
+    }
+
+    public List<BookingResponseDto> getBookingByUserId(Long id) {
+        List<Booking> b = bookingRepo.findByRenterId(id).orElseThrow(() -> new ResourceNotFoundException("No Bookings found"));
+        return b.stream()
+                .map(booking -> bookingMapper.toDto(booking))
+                .collect(Collectors.toList());
+    }
+
+    public List<BookingResponseDto> getBookingByOwnerId(Long id) {
+        List<Booking> bookings = bookingRepo.findByOwnerId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No Bookings Found"));
+        return bookings.stream()
+                .map(booking -> bookingMapper.toDto(booking))
+                .collect(Collectors.toList());
+    }
+
+    public void cancelBooking(Long id) {
+        Booking booking = bookingRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+
+        if (!booking.getStatus().getName().equals("UNCONFIRMED")) {
+            throw new IllegalStateException("Only UNCONFIRMED bookings can be canceled.");
+        }
+
+        BookingStatus cancelled = bookingStatusRepo.findByName("CANCELLED")
+                .orElseThrow(() -> new ResourceNotFoundException("Status not found"));
+
+        booking.setStatus(cancelled);
+        booking.setUpdatedAt(LocalDateTime.now());
+        bookingRepo.save(booking);
+    }
+
+    public void payBooking(Long id) {
+        Booking booking = bookingRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+
+        if (!booking.getStatus().getName().equals("ACCEPTED")) {
+            throw new IllegalStateException("Payment allowed only after owner approval.");
+        }
+        Long vehicleId = booking.getVehicle().getId();
+
+        BookingStatus paid = bookingStatusRepo.findByName("CONFIRMED")
+                .orElseThrow(() -> new ResourceNotFoundException("Status not found"));
+
+        booking.setStatus(paid);
+        booking.setUpdatedAt(LocalDateTime.now());
+        bookingRepo.save(booking);
+
+        vehicleService.updateStatus(vehicleId, "booked");   //update vehicle status
+
+    }
+
+    public void acceptBooking(Long id) {
+        Booking booking = bookingRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+
+        if (!booking.getStatus().getName().equals("UNCONFIRMED")) {
+            throw new IllegalStateException("Only PENDING booking can be approved.");
+        }
+
+        BookingStatus accepted = bookingStatusRepo.findByName("ACCEPTED")
+                .orElseThrow(() -> new ResourceNotFoundException("Status not found"));
+
+        VehicleStatus reserved = vehicleStatusRepo.findByName("RESERVED")
+                .orElseThrow(() -> new ResourceNotFoundException(" Vehicle Status not found"));
+
+        Vehicle v = booking.getVehicle();
+        v.setStatus(reserved);
+        vehicleRepo.save(v);        // update vehicle status
+
+        booking.setStatus(accepted);
+        booking.setUpdatedAt(LocalDateTime.now());
+        bookingRepo.save(booking);
+    }
+
+    private LocalDateTime normalizeToIST(LocalDateTime dateTime) {
+        return dateTime.atOffset(ZoneOffset.UTC)
+                .atZoneSameInstant(ZoneId.of("Asia/Kolkata"))
+                .toLocalDateTime();
+    }
+
+    public void rejectBooking(Long id) {
+        Booking booking = bookingRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+
+        if (!booking.getStatus().getName().equals("UNCONFIRMED")) {
+            throw new IllegalStateException("Booking cannot be rejected now.");
+        }
+
+        BookingStatus rejected = bookingStatusRepo.findByName("REJECTED")
+                .orElseThrow(() -> new ResourceNotFoundException("Status not found"));
+
+        booking.setStatus(rejected);
+        booking.setUpdatedAt(LocalDateTime.now());
+        bookingRepo.save(booking);
+    }
+
+
+    public List<BookingResponseDto> getRecentBookings(Long id) {
+        Pageable limit = PageRequest.of(0, 3);  // Top 3
+        return bookingRepo.findRecentBookings(id, limit)
+                .stream()
+                .map(bookingMapper::toDto)
+                .collect(Collectors.toList());
+    }
+    public boolean isBookingCreator(Long bookingId, Long userId) {
+        Booking booking=bookingRepo.findById(bookingId)
+                .orElseThrow(()->new ResourceNotFoundException("Booking not found"));
+        return booking.getRenter().getId().equals(userId);
+
+    }
+
+    public boolean isVehicleOwnerForBooking(Long bookingId, Long ownerId) {
+
+        Booking booking=bookingRepo.findById(bookingId)
+                .orElseThrow(()->new ResourceNotFoundException("Booking not found"));
+
+        return booking.getVehicle().getOwner().getId().equals(ownerId);
     }
 }

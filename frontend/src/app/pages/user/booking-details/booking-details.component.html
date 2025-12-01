@@ -33,7 +33,8 @@
 
     <div class="actions">
       <button *ngIf="!isConfirmed" class="btn book-btn" (click)="onBookVehicle()">Book Vehicle</button>
-      <button *ngIf="isConfirmed && !isPaid" class="btn pay-btn" (click)="onPayNow()">Pay Now</button>
+      <button *ngIf="!isPaid && isWaiting" class="btn book-btn" (click)="onBookVehicle()">waiting</button>
+      <button *ngIf="!isWaiting && !isPaid && isConfirmed" class="btn pay-btn" (click)="onPayNow()">Pay Now</button>
       <p *ngIf="isPaid" class="success">Booking Confirmed & Paid</p>
     </div>
   </div>

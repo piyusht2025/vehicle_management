@@ -1,12 +1,11 @@
 package com.poc.backend.mapper;
 
-import com.poc.backend.dto.user.UserResponse;
 import com.poc.backend.dto.user.UserRequestDto;
+import com.poc.backend.dto.user.UserResponse;
 import com.poc.backend.entity.Role;
 import com.poc.backend.entity.User;
 import com.poc.backend.exception.ResourceNotFoundException;
 import com.poc.backend.repository.RoleRepo;
-import com.poc.backend.repository.UserRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,16 +20,18 @@ public class UserMapper {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    public UserResponse toDto(User user){
+
+    public UserResponse toDto(User user) {
         UserResponse userResponse = modelMapper.map(user, UserResponse.class);
         userResponse.setRole(user.getRole().getName());
         return userResponse;
     }
-    public User toEntity(UserRequestDto userRequestDto){
-        User user=modelMapper.map(userRequestDto,User.class);
+
+    public User toEntity(UserRequestDto userRequestDto) {
+        User user = modelMapper.map(userRequestDto, User.class);
 
         Role role = roleRepo.findByName(userRequestDto.getRole().toUpperCase())
-                            .orElseThrow(()-> new ResourceNotFoundException("Invalid Role "+userRequestDto.getRole()));
+                .orElseThrow(() -> new ResourceNotFoundException("Invalid Role " + userRequestDto.getRole()));
 
         user.setRole(role);
 

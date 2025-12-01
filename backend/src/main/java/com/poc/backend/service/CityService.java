@@ -11,6 +11,7 @@ import java.util.List;
 public class CityService {
     @Autowired
     CityRepo cityRepo;
+
     public List<City> getAllCities() {
         return cityRepo.findAll();
     }

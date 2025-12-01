@@ -1,24 +1,41 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './components/header/header.component';
+import { FormsModule } from '@angular/forms';
+import { HeaderComponent } from './components/header/user-header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
-import { UserDashboardComponent } from './pages/user-dashboard/user-dashboard.component';
-import { VehicleListComponent } from './pages/vehicle-list/vehicle-list.component';
-import { HttpClientModule } from '@angular/common/http';
-import { VehicleRegistrationComponent } from './pages/vehicle-registration/vehicle-registration.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UserDashboardComponent } from './pages/user/user-dashboard/user-dashboard.component';
+import { VehicleListComponent } from './pages/user/vehicle-list/vehicle-list.component';
+import { VehicleRegistrationComponent } from './pages/owner/vehicle-registration/vehicle-registration.component';
 import { ProfileComponent } from './pages/profile/profile.component';
-import { CommonModule } from '@angular/common';
 import { AdminHeaderComponent } from './components/header/admin-header/admin-header.component';
 import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 import { AdminVehicleComponent } from './pages/admin/admin-vehicle/admin-vehicle.component';
 import { AdminUsersListComponent } from './pages/admin/admin-users-list/admin-users-list.component';
-import { BookingsComponent } from './pages/bookings/bookings.component';
-import { BookingDetailsComponent } from './pages/booking-details/booking-details.component';
+import { BookingsComponent } from './pages/user/bookings/bookings.component';
+import { BookingDetailsComponent } from './pages/user/booking-details/booking-details.component';
 import { OwnerHeaderComponent } from './components/header/owner-header/owner-header.component';
+import { MyBookingsComponent } from './pages/user/my-bookings/my-bookings.component';
+import { BookingListComponent } from './pages/owner/booking-list/booking-list.component';
+import { OwnerDashboardComponent } from './pages/owner/owner-dashboard/owner-dashboard.component';
+
+import { JwtModule } from '@auth0/angular-jwt';
+import { AuthService } from './core/services/auth.service';
+import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { LandingComponent } from './components/landing/landing.component';
+
+
+export function tokenGetter() {
+  return localStorage.getItem('jwtToken');
+}
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,17 +51,37 @@ import { OwnerHeaderComponent } from './components/header/owner-header/owner-hea
     AdminUsersListComponent,
     BookingsComponent,
     BookingDetailsComponent,
-    OwnerHeaderComponent
+    OwnerHeaderComponent,
+    MyBookingsComponent,
+    BookingListComponent,
+    OwnerDashboardComponent,
+    LoginComponent,
+    RegisterComponent,
+    LandingComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-     CommonModule,
+    CommonModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        allowedDomains: ['localhost:8092'],
+      }
+    })
   ],
-  providers: [],
+  providers: [
+    AuthService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

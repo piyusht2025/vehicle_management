@@ -1,14 +1,7 @@
 package com.poc.backend.dto.vehicle;
 
-import com.poc.backend.entity.*;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data

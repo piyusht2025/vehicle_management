@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: backend
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/vehicleRentalSystem
+    username: postgres
+    password: argusadmin
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  jackson:
+    time-zone: Asia/Kolkata
+
+server:
+  port: 8092
+
+jwt:
+  secret: "jwt-secret-key-1234567890-very-strong-key!!"
+  expiration-ms: 86400000

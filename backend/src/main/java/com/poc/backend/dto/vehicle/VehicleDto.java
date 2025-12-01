@@ -1,12 +1,9 @@
 package com.poc.backend.dto.vehicle;
 
-import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
-public class VehicleDto{
+public class VehicleDto {
     private Long id;
     private String brand;
     private String model;

@@ -1,4 +1,3 @@
-
 package com.poc.backend.mapper;
 
 import com.poc.backend.dto.booking.BookingResponseDto;
@@ -17,6 +16,8 @@ public class BookingMapper {
         dto.setEndTime(booking.getEndTime());
         dto.setAmount(booking.getAmount());
         dto.setStatus(booking.getStatus().getName());
+        dto.setVehicleId(booking.getVehicle().getId());
+        dto.setVehicleStatus(booking.getVehicle().getStatus().getName());
         return dto;
     }
 }

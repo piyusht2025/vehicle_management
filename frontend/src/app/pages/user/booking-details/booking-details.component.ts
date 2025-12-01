@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'app-booking-details',
@@ -16,12 +17,13 @@ export class BookingDetailsComponent implements OnInit {
   daysDiff: number = 0;
   isConfirmed: boolean = false;
   isPaid: boolean = false;
+  isWaiting: boolean = false;
   loading = true;
 
   private apiUrl = 'http://localhost:8092/api/vehicles';
-  private bookingApi = 'http://localhost:8092/api/bookings';
+  private bookingApi = 'http://localhost:8092/api/booking';
   private backendUrl='http://localhost:8092';
-  constructor(private route: ActivatedRoute, private http: HttpClient, private router: Router) {}
+  constructor(private route: ActivatedRoute, private http: HttpClient, private router: Router,private authService:AuthService) {}
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
@@ -58,17 +60,19 @@ export class BookingDetailsComponent implements OnInit {
 
   onBookVehicle(): void {
     const booking = {
-      renterId: 1,
+      renterId: this.authService.getUserId(),
       vehicleId: this.vehicle.id,
       startTime: this.startTime,
       endTime: this.endTime,
       amount: this.totalAmount,
     };
+    console.log("BOokings",booking);
 
     this.http.post(this.bookingApi, booking).subscribe({
       next: (response) => {
         alert('Booking request sent to owner for approval!');
         this.isConfirmed = true;
+        this.isWaiting = true;
       },
       error: (err) => console.error('Booking failed:', err),
     });

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { VehicleService } from 'src/app/services/vehicle.service';
+import { VehicleService } from 'src/app/core/services/vehicle.service';
 
 @Component({
   selector: 'app-admin-vehicle',

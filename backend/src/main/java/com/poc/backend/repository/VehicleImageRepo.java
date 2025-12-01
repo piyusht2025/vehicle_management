@@ -10,8 +10,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface VehicleImageRepo extends JpaRepository<VehicleImage,Long> {
+public interface VehicleImageRepo extends JpaRepository<VehicleImage, Long> {
     List<String> findAllById(Long ownerId);
+
     @Modifying
     @Query("DELETE FROM VehicleImage vi WHERE vi.vehicle.id = :vehicleId")
     void deleteByVehicleId(@Param("vehicleId") Long vehicleId);

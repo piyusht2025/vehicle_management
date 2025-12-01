@@ -2,7 +2,6 @@ package com.poc.backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -49,6 +48,7 @@ public class Vehicle {
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("vehicle")
     private List<VehicleImage> images = new ArrayList<>();
+
     @Override
     public String toString() {
         return "Vehicle{id=" + id + ", brand=" + brand + ", model=" + model + ", registrationNo=" + registrationNo + "}";

@@ -1,7 +1,6 @@
 package com.poc.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -14,9 +13,9 @@ public class VehicleImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name="vehicle_id")
+    @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
-    @Column(name="image_url")
+    @Column(name = "image_url")
     private String url;
-    private LocalDateTime createdAt=LocalDateTime.now();
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

@@ -1,11 +1,7 @@
-<app-header></app-header>
+<app-owner-header></app-owner-header>
 <div class="vehicle-registration-container">
   <h2>Vehicle Registration</h2>
   <form [formGroup]="vehicleForm" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <label>Owner ID</label>
-      <input formControlName="ownerId" type="number" placeholder="Enter Owner ID" />
-    </div>
     <div class="form-group">
       <label>Vehicle Type</label>
       <input formControlName="type" placeholder="e.g. FOUR WHEELER" />

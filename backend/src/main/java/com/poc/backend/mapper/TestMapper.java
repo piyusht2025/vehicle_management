@@ -1,13 +1,5 @@
 package com.poc.backend.mapper;
 
-import com.poc.backend.dto.vehicle.VehicleResponseDto;
-import com.poc.backend.entity.*;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.stream.Collectors;
-
 public class TestMapper {
 
 //    @Component

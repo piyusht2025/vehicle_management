@@ -1,0 +1,28 @@
+<div class="auth-container">
+  <h2>Register</h2>
+
+  <form (ngSubmit)="register()" #registerForm="ngForm">
+
+    <input type="text" name="name" [(ngModel)]="name" required placeholder="Full Name">
+
+    <input type="email" name="email" [(ngModel)]="email" required placeholder="Email">
+
+    <input type="text" name="phone" [(ngModel)]="phone" required placeholder="Phone Number">
+
+    <input type="password" name="password" [(ngModel)]="password" required placeholder="Password">
+
+    <select name="role" [(ngModel)]="role" required>
+      <option value="">Select Role</option>
+      <option value="USER">User</option>
+      <option value="OWNER">Owner</option>
+    </select>
+
+    <input type="text" *ngIf="role==='USER'" name="license" placeholder="License Number">
+    <button type="submit" [disabled]="registerForm.invalid">Register</button>
+
+    <p class="link">Already have an account?
+      <a routerLink="/login">Login</a>
+    </p>
+
+  </form>
+</div>

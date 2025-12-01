@@ -8,7 +8,7 @@
     <input type="text" placeholder="Search by brand or model..." [(ngModel)]="searchText" />
     <select [(ngModel)]="filteredStatus" (change)="filterVehicle()">
       <option value="">All Status</option>
-      <option value="PENDING">Pending</option>
+      <option value="REVIEW_PENDING">Pending</option>
       <option value="AVAILABLE">Available</option>
       <option value="REJECTED">Rejected</option>
     </select>
@@ -44,8 +44,8 @@
           </td>
           <td class="actions">
             <button class="btn view-btn" (click)="viewVehicle(v)"> View</button>
-            <button class="btn approve-btn" *ngIf="v.status==='PENDING'"(click)="approveVehicle(v.id)"  >Approve</button>
-            <button class="btn reject-btn" *ngIf="v.status==='PENDING'"> Reject</button>
+            <button class="btn approve-btn" *ngIf="v.status==='REVIEW_PENDING'"(click)="approveVehicle(v.id)"  >Approve</button>
+            <button class="btn reject-btn" *ngIf="v.status==='REVIEW_PENDING'"> Reject</button>
             <button class="btn delete-btn"> Delete</button>
           </td>
         </tr>
