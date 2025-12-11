@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class VehicleService {
+
 private baseUrl = 'http://localhost:8092/api/vehicles';
 private cityUrl='http://localhost:8092/api/city';
 
@@ -20,8 +21,15 @@ private cityUrl='http://localhost:8092/api/city';
     return this.http.get(this.baseUrl);
   }
   accept(id:number): Observable<any> {
-    return this.http.patch(`${this.baseUrl}/${id}`,{status:"AVAILABLE",available:true});
+    return this.http.patch(`${this.baseUrl}/${id}`,{status:"AVAILABLE",active:true});
   }
+  reject(id:number): Observable<any> {
+    return this.http.patch(`${this.baseUrl}/${id}`,{status:"REJECTED"});
+  }
+  delete(id:number): Observable<any> {
+    return this.http.patch(`${this.baseUrl}/${id}`,{status:"NOT_AVAILABLE",active:false});
+  }
+
   uploadImage(vehicleId: number, file: File): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);

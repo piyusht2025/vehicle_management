@@ -14,7 +14,6 @@ export class AdminUsersListComponent {
       this.userService.getAllUsers().subscribe({
         next:(data)=>{
           this.users=data;
-          console.log(this.users);
         }
       });
 }

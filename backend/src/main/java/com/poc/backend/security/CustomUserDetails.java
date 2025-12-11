@@ -1,6 +1,5 @@
 package com.poc.backend.security;
 
-// Example: com.poc.backend.security.CustomUserDetails.java
 
 import com.poc.backend.entity.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,7 +20,6 @@ public class CustomUserDetails implements UserDetails {
         this.id = user.getId();
         this.email = user.getEmail();
         this.password = user.getPassword();
-        // Map user roles to GrantedAuthorities
         this.authorities = List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().getName()));
     }
 
@@ -29,7 +27,6 @@ public class CustomUserDetails implements UserDetails {
         return id;
     }
 
-    // Implementations for UserDetails methods
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
@@ -45,6 +42,5 @@ public class CustomUserDetails implements UserDetails {
         return email;
     }
 
-    // Other required UserDetails methods (set to return true/false as appropriate for your needs)
-    // ...
+
 }

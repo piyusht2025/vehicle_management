@@ -68,6 +68,9 @@
               <strong>₹{{ v.pricePerHour }}</strong
               ><span>/hr</span>
             </div>
+            <div class="rating">
+              <strong>{{ v.avgRating }}/5 Rating</strong              >
+            </div>
           </div>
           <button class="btn" *ngIf="isFiltered" (click)="onBooking(v)">Book</button>
 

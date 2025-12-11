@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/vehicles")
 public class VehicleController {
     @Autowired
@@ -46,6 +46,12 @@ public class VehicleController {
     public ResponseEntity<VehicleResponseDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(vehicleService.getById(id));
     }
+
+    @GetMapping("/owner/{id}")
+    public ResponseEntity<List<VehicleResponseDto>> getByOwnerId(@PathVariable Long id) {
+        return ResponseEntity.ok(vehicleService.getByOwnerId(id));
+    }
+
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasAnyRole('OWNER','ADMIN') and (@vehicleService.isVehicleOwner(#id,principal.id) or hasRole('ADMIN'))")

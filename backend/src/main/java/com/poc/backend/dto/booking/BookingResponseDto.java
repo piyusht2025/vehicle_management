@@ -15,4 +15,8 @@ public class BookingResponseDto {
     private String status;
     private Long vehicleId;
     private String vehicleStatus;
+    private Integer renterRatingByOwner;
+    private Integer vehicleRatingByRenter;
+
+
 }

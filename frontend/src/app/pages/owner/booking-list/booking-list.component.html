@@ -28,7 +28,7 @@
       <div class="left">
         <div class="meta">
           <h3>{{ b.vehicleModel }}</h3>
-          <p class="owner">Owner: {{ b.ownerName }}</p>
+          <!-- <p class="owner">Owner: {{ b.ownerName }}</p> -->
           <p class="when">
             <strong>{{ b.startTime | date : "short" }}</strong>
             &nbsp;→&nbsp;
@@ -64,7 +64,6 @@
             Accept
           </button>
 
-          <!-- After booking end-time (Owner Review Stage) -->
           <button
             class="btn complete"
             *ngIf="

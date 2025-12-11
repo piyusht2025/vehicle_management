@@ -5,8 +5,9 @@
   </div>
   <nav class="nav-links">
     <a routerLink="/admin/dashboard" routerLinkActive="active">Dashboard</a>
+    <a routerLink="/admin/analytics" routerLinkActive="active">Analytics</a>
     <a routerLink="/admin/vehicles" routerLinkActive="active">Vehicles</a>
     <a routerLink="/admin/users" routerLinkActive="active">Users</a>
-    <button class="logout-btn">Logout</button>
+    <a (click)="logOut()" > LogOut </a>
   </nav>
 </header>

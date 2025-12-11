@@ -8,7 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface RoleRepo extends JpaRepository<Role, Long> {
-    //    @Query("SELECT r FROM Role r WHERE UPPER(r.name) = UPPER(:name)")
     Optional<Role> findByName(String name);
 
 }

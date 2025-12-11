@@ -26,12 +26,20 @@ create table vehicles(id bigserial primary key ,
 					 price_per_hour decimal(10,2) ,
 					 price_per_day decimal(20,2) ,
 					 status bigint references vehicle_status(id),
-					 city_id bigint references city(id)
+					 city_id bigint references city(id),
+					 avg_rating DECIMAL(3,2) DEFAULT 0,
 					 is_available boolean default true,
 					 created_at timestamp default current_timestamp,
 					 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 					 is_active boolean default true
 					 );
+
+ALTER TABLE vehicles 
+ADD COLUMN avg_rating DECIMAL(3,2) DEFAULT 0;
+
+ALTER TABLE vehicles 
+ADD COLUMN rating_count INT DEFAULT 0;
+
 create table vehicle_image(id bigserial primary key ,
 						   vehicle_id bigint references vehicles(id) on delete cascade,
     					   image_url text not null,
@@ -65,6 +73,12 @@ create table bookings(id bigserial primary key,
 					);
 alter table bookings add column pickup_city  bigint references city(id);
 alter table vehicles add column city_id bigint references city(id);
+
+ALTER TABLE bookings
+ADD COLUMN renter_rating_by_owner smallint CHECK (renter_rating_by_owner BETWEEN 1 AND 5);
+ALTER TABLE bookings
+ADD COLUMN vehicle_rating_by_renter smallint CHECK (vehicle_rating_by_renter BETWEEN 1 AND 5);
+
 
 create table city(id bigserial primary key,
 					name varchar(60) unique not null);

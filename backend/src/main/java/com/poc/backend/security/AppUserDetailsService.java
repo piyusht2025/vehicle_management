@@ -19,15 +19,6 @@ public class AppUserDetailsService implements UserDetailsService {
         User user = userRepo.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().getName().toUpperCase()));
-//        return org.springframework.security.core.userdetails.User.builder()
-//                .username(user.getEmail())
-//                .password(user.getPassword())
-//                .authorities(authorities)
-//                .accountExpired(false)
-//                .accountLocked(false)
-//                .credentialsExpired(false)
-//                .disabled(!Boolean.TRUE.equals(user.getActive()))
-//                .build();
         return new CustomUserDetails(user);
     }
 }

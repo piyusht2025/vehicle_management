@@ -18,6 +18,9 @@ public class BookingMapper {
         dto.setStatus(booking.getStatus().getName());
         dto.setVehicleId(booking.getVehicle().getId());
         dto.setVehicleStatus(booking.getVehicle().getStatus().getName());
+        dto.setRenterRatingByOwner(booking.getRenterRatingByOwner());
+        dto.setVehicleRatingByRenter(booking.getVehicleRatingByRenter());
+
         return dto;
     }
 }

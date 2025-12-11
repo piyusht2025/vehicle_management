@@ -20,6 +20,10 @@ export class MyBookingsComponent implements OnInit {
   selectedBooking: any = null;
   showModal = false;
 
+  showRatingModal = false;
+  rateTargetBooking: any = null;
+  ratingSelected = 5;
+
   private bookingApi = 'http://localhost:8092/api/booking';
   private backendUrl = 'http://localhost:8092';
 
@@ -85,6 +89,46 @@ export class MyBookingsComponent implements OnInit {
     console.log(this.showModal );
 
   }
+
+
+  openRatingModal(b: any): void {
+    // ensure this booking belongs to current user (this page is user bookings so typically yes)
+    this.rateTargetBooking = b;
+    this.ratingSelected = 5; // default or you can set to 0
+    this.showRatingModal = true;
+  }
+
+  selectRating(value: number): void {
+    this.ratingSelected = value;
+  }
+
+  closeRatingModal(): void {
+    this.showRatingModal = false;
+    this.rateTargetBooking = null;
+    this.ratingSelected = 5;
+  }
+
+  submitRating(): void {
+    if (!this.rateTargetBooking || !this.rateTargetBooking.id) return;
+
+    const bookingId = this.rateTargetBooking.id;
+    const payload = { rating: this.ratingSelected };
+
+    // call backend PATCH /api/booking/{id}/rate-vehicle
+    this.http.patch(`${this.bookingApi}/${bookingId}/rate-vehicle`, payload, { responseType: 'text' })
+      .subscribe({
+        next: () => {
+          alert('Thanks for rating!');
+          this.closeRatingModal();
+          this.loadBookings(); // reload bookings to show updated rating
+        },
+        error: (err) => {
+          console.error('Rating failed', err);
+          alert('Failed to submit rating. Please try again.');
+        }
+      });
+  }
+
 
   closeModal(): void {
     this.showModal = false;

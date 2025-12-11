@@ -20,5 +20,8 @@ server:
   port: 8092
 
 jwt:
-  secret: "jwt-secret-key-1234567890-very-strong-key!!"
-  expiration-ms: 86400000
+  access-secret: "Java is a high-level, general-purpose, memory-safe, object-oriented programming language."
+  refresh-secret: "Angular (also referred to as Angular 2+)[4] is a TypeScript-based free and open-source single-page web application framework."
+  access-expiration-ms: 900000
+  refresh-expiration-ms: 604800000
+

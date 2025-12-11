@@ -20,5 +20,7 @@ public class VehicleResponseDto {
     private Double pricePerHour;
     private Double pricePerDay;
     private Boolean available;
+    private Double avgRating ;
+
     private List<String> images;
 }

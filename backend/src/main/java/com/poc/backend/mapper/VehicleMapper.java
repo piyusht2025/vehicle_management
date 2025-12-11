@@ -46,7 +46,7 @@ public class VehicleMapper {
     }
 
     public Vehicle toEntity(VehicleRequestDto dto) {
-
+        System.out.println(dto);
         Vehicle vehicle = modelMapper.map(dto, Vehicle.class);
         vehicle.setId(null);
 
@@ -65,6 +65,7 @@ public class VehicleMapper {
                     .orElseThrow(() -> new ResourceNotFoundException("VehicleStatus doesn't exist")));
         }
         vehicle.setImages(null);
+        vehicle.setActive(false);
         return vehicle;
     }
 

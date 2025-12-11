@@ -2,10 +2,7 @@ package com.poc.backend.service;
 
 import com.poc.backend.dto.vehicle.VehicleRequestDto;
 import com.poc.backend.dto.vehicle.VehicleResponseDto;
-import com.poc.backend.entity.Vehicle;
-import com.poc.backend.entity.VehicleImage;
-import com.poc.backend.entity.VehicleStatus;
-import com.poc.backend.entity.VehicleType;
+import com.poc.backend.entity.*;
 import com.poc.backend.exception.ResourceNotFoundException;
 import com.poc.backend.mapper.VehicleMapper;
 import com.poc.backend.repository.*;
@@ -55,7 +52,7 @@ public class VehicleService {
     }
 
     public List<VehicleResponseDto> getAllAvailableVehicles() {
-        List<Vehicle> vehicles = vehicleRepo.findAll()
+        List<Vehicle> vehicles = vehicleRepo.findAllOrderByAvgRatingDesc()
                 .stream()
                 .filter(Vehicle::getActive)
                 .filter(vehicle -> vehicle.getStatus().getId() == 1)
@@ -67,7 +64,7 @@ public class VehicleService {
     }
 
     public List<VehicleResponseDto> getAllVehicles() {
-        List<Vehicle> vehicles = vehicleRepo.findAll();
+        List<Vehicle> vehicles = vehicleRepo.findAllOrderByAvgRatingDesc();
         return vehicles.stream()
                 .map(veh -> {
                     return vehicleMapper.toDto(veh);
@@ -97,6 +94,7 @@ public class VehicleService {
         if (dto.getPricePerHour() != null) existingVehicle.setPricePerHour(dto.getPricePerHour());
         if (dto.getPricePerDay() != null) existingVehicle.setPricePerDay(dto.getPricePerDay());
         if (dto.getAvailable() != null) existingVehicle.setAvailable(dto.getAvailable());
+        if (dto.getActive() != null) existingVehicle.setActive(dto.getActive());
 
         if (dto.getType() != null) {
             VehicleType type = vehicleTypesRepo.findByName(dto.getType())
@@ -200,5 +198,16 @@ public class VehicleService {
                 .orElseThrow(()->new ResourceNotFoundException("Vehicle not found"));
         return vehicle.getOwner().getId().equals(ownerId);
     }
-    
+
+    public List<VehicleResponseDto> getByOwnerId(Long id) {
+        List<Vehicle> vehicles = vehicleRepo.findByOwnerId(id);
+        return vehicles.stream()
+                .map(veh -> {
+                    return vehicleMapper.toDto(veh);
+                }).collect(Collectors.toList());
+    }
+    public Integer getPendingApprovals(){
+        List<Vehicle> vehicles=vehicleRepo.findPendingVehicles();
+        return vehicles.size();
+    }
 }

@@ -1,3 +1,57 @@
 <app-owner-header></app-owner-header>
 
+<div class="dashboard">
+  <div class="container">
+    <div class="welcome">
+      <div class="welcome-content">
+        <h1 class="welcome-title">Welcome, {{ ownerName }}</h1>
+        <p class="welcome-subtitle">
+          Track your vehicles and bookings at a glance.
+        </p>
+      </div>
+    </div>
 
+    <div class="stats">
+      <div class="stats-card">
+        <p class="label">Total Vehicles</p>
+        <p class="value">{{ stats.totalVehicles }}</p>
+      </div>
+      <div class="stats-card">
+        <p class="label">Pending Approvals</p>
+        <p class="value">{{ stats.pendingApproval }}</p>
+      </div>
+      <div class="stats-card">
+        <p class="label">Active Bookings</p>
+        <p class="value">{{ stats.activeBookings }}</p>
+      </div>
+      <div class="stats-card">
+        <p class="label">Total Revenue</p>
+        <p class="value">₹{{ stats.totalRevenue }}</p>
+      </div>
+    </div>
+
+    <div class="sec1">
+      <div class="chart-card">
+        <h2>Revenue per Vehicle</h2>
+        <div class="chart-wrapper">
+          <canvas baseChart [type]="revenueChartType" [data]="revenueChartData">
+          </canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h2>Monthly Earnings</h2>
+
+        <div class="chart-wrapper">
+          <canvas
+            baseChart
+            [type]="monthlyChartType"
+            [data]="monthlyChartData"
+            [options]="monthlyChartOptions"
+          >
+          </canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

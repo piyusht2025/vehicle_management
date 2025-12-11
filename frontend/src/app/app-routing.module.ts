@@ -17,6 +17,7 @@ import { RoleGuard } from './core/guards/role.guard';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { LandingComponent } from './components/landing/landing.component';
+import { AdminAnalyticsComponent } from './pages/admin/admin-analytics/admin-analytics.component';
 
 // const routes: Routes = [
 //   {path:'',redirectTo:'user/dashboard',pathMatch:'full'},
@@ -100,6 +101,12 @@ const routes: Routes = [
   {
     path: 'admin/vehicles',
     component: AdminVehicleComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['ROLE_ADMIN'] }
+  },
+  {
+    path: 'admin/analytics',
+    component: AdminAnalyticsComponent,
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['ROLE_ADMIN'] }
   },

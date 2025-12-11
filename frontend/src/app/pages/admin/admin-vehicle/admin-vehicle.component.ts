@@ -36,7 +36,6 @@ export class AdminVehicleComponent implements OnInit {
     });
   }
   approveVehicle(id: number) {
-    console.log(id);
 
     this.vehicleService.accept(id).subscribe({
       next: (data) => {
@@ -45,10 +44,8 @@ export class AdminVehicleComponent implements OnInit {
     });
   }
   viewVehicle(vehicle: any) {
-    console.log('Modal Opened for Vehicle:', vehicle);
     this.selectedVehicle = vehicle;
     this.showModal = true;
-    console.log(this.showModal)
   }
 
   closeModal() {
@@ -58,5 +55,13 @@ export class AdminVehicleComponent implements OnInit {
 
   refreshVehicles() {
     this.loadVehicle();
+  }
+
+  deleteVehicle(id:number){
+    this.vehicleService.delete(id).subscribe({
+      next:(data)=>{
+        this.loadVehicle();
+      }
+    });
   }
 }

@@ -1,0 +1,112 @@
+<app-admin-header></app-admin-header>
+
+<div class="dashboard">
+  <div class="container">
+    <div class="stats">
+      <div class="stats-card primary">
+        <p class="label">Total Revenue</p>
+        <p class="value">₹{{ kpi.totalRevenue | number : '1.0-0' }}</p>
+      </div>
+
+      <div class="stats-card secondary">
+        <p class="label">Total Bookings</p>
+        <p class="value">{{ kpi.totalVehicles }}</p>
+      </div>
+    </div>
+
+    <!-- Row 2: Insights Cards -->
+    <div class="insights">
+      <!-- Top Spenders -->
+      <div class="insight-card">
+        <h2>Top 3 Highest Spent Users</h2>
+        <div *ngIf="topSpenders.length; else noSpenders">
+          <div class="horizontal-card" *ngFor="let u of topSpenders">
+            <div class="hc-main">
+              <h3>{{ u.name }}</h3>
+              <p class="email">{{ u.email }}</p>
+              <p class="meta">Bookings: {{ u.totalBooking }}</p>
+            </div>
+            <div class="hc-side">
+              <p class="amount">₹{{ u.totalSpent | number : '1.0-0' }}</p>
+              <p class="label-sm">Total Spent</p>
+            </div>
+          </div>
+        </div>
+        <ng-template #noSpenders>
+          <p class="empty-text">No booking data yet.</p>
+        </ng-template>
+      </div>
+
+      <div class="insight-card">
+        <h2>Top 3 Revenue-Generating Vehicles</h2>
+        <div *ngIf="topVehicles.length; else noVehicles">
+          <div class="horizontal-card" *ngFor="let v of topVehicles">
+            <div class="hc-main">
+              <h3>{{ v.name }}</h3>
+              <p class="owner">Owner: {{ v.ownerName }}</p>
+              <p class="meta">Bookings: {{ v.totalBooking }}</p>
+            </div>
+            <div class="hc-side">
+              <p class="amount">₹{{ v.totalRevenue | number : '1.0-0' }}</p>
+              <p class="label-sm">Revenue</p>
+            </div>
+          </div>
+        </div>
+        <ng-template #noVehicles>
+          <p class="empty-text">No vehicle revenue data yet.</p>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- Row 3: Owner Revenue -->
+    <div class="owner-revenue">
+      <!-- Bar chart -->
+      <div class="chart-card">
+        <h2>Owner-wise Revenue</h2>
+        <div class="chart-wrapper">
+          <canvas
+            baseChart
+            [type]="ownerRevenueChartType"
+            [data]="ownerRevenueChartData"
+            [options]="ownerRevenueChartOptions">
+          </canvas>
+        </div>
+      </div>
+
+      <!-- Owner stats table -->
+      <div class="table-card">
+        <h2>Owner Stats</h2>
+
+        <table *ngIf="ownerStats.length; else noOwnerStats">
+          <thead>
+            <tr>
+              <th>Owner</th>
+              <th>Vehicles</th>
+              <th>Bookings</th>
+              <th>Revenue (₹)</th>
+              <th>Avg Revenue / Vehicle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let o of ownerStats">
+              <td>{{ o.ownerName }}</td>
+              <td>{{ o.totalVehicles }}</td>
+              <td>{{ o.totalBooking }}</td>
+              <td>{{ o.totalRevenue | number : '1.0-0' }}</td>
+              <td>
+                ₹{{
+                  (o.totalVehicles ? o.totalRevenue / o.totalVehicles : 0)
+                    | number : '1.0-0'
+                }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <ng-template #noOwnerStats>
+          <p class="empty-text">No owner revenue data yet.</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

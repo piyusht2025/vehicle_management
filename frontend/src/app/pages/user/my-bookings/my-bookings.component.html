@@ -15,21 +15,25 @@
         <option value="COMPLETED">Completed</option>
       </select>
 
-      <input type="text" placeholder="Search by vehicle/owner..." [(ngModel)]="searchText" (input)="applyFilters()" />
+      <input
+        type="text"
+        placeholder="Search by vehicle/owner..."
+        [(ngModel)]="searchText"
+        (input)="applyFilters()"
+      />
     </div>
   </div>
 
   <div class="booking-list" *ngIf="bookings && bookings.length">
     <article class="booking-card" *ngFor="let b of filteredBookings">
       <div class="left">
-
         <div class="meta">
-          <h3>{{b.vehicleModel}}</h3>
-          <p class="owner">Owner: {{ b.ownerName}}</p>
+          <h3>{{ b.vehicleModel }}</h3>
+          <p class="owner">Owner: {{ b.ownerName }}</p>
           <p class="when">
-            <strong>{{ b.startTime | date:'short' }}</strong>
+            <strong>{{ b.startTime | date : "short" }}</strong>
             &nbsp;→&nbsp;
-            <strong>{{ b.endTime | date:'short' }}</strong>
+            <strong>{{ b.endTime | date : "short" }}</strong>
           </p>
           <p class="amount">₹{{ b.amount }}</p>
         </div>
@@ -37,53 +41,99 @@
 
       <div class="right">
         <div class="status-row">
-          <span class="badge" [ngClass]="b.status.toLowerCase()">{{ b.status }}</span>
+          <span class="badge" [ngClass]="b.status.toLowerCase()">{{
+            b.status
+          }}</span>
         </div>
 
         <div class="actions">
           <button class="btn view" (click)="viewBooking(b)">View</button>
+          <button
+            class="btn view"
+            *ngIf="b.status === 'COMPLETED' && !b.vehicleRatingByRenter"
+            (click)="openRatingModal(b)"
+          >
+            Rate
+          </button>
 
-          <button class="btn pay" *ngIf="b.status === 'ACCEPTED' && !b.isPaid" (click)="payBooking(b)">
+          <!-- show read-only rating when already rated -->
+          <div *ngIf="b.vehicleRatingByRenter" class="rating-display">
+            <span *ngFor="let s of [1, 2, 3, 4, 5]">
+              <i class="star" [class.filled]="s <= b.vehicleRatingByRenter"
+                >★</i
+              >
+            </span>
+            <small>Rated: {{ b.vehicleRatingByRenter }}/5</small>
+          </div>
+
+          <button
+            class="btn pay"
+            *ngIf="b.status === 'ACCEPTED' && !b.isPaid"
+            (click)="payBooking(b)"
+          >
             Pay
           </button>
-          <button class="btn cancel" *ngIf="b.status === 'UNCONFIRMED'" (click)="cancelBooking(b)">
+          <button
+            class="btn cancel"
+            *ngIf="b.status === 'UNCONFIRMED'"
+            (click)="cancelBooking(b)"
+          >
             Cancel
           </button>
-
         </div>
       </div>
     </article>
   </div>
-
-
 </div>
 
 <div *ngIf="showModal">
-<div class="modal-overlay" >
-  <div class="modal">
-    <h3>{{ selectedBooking?.vehicleModel }}</h3>
-    <p><strong>Owner:</strong> {{ selectedBooking?.ownerName }}</p>
-    <p><strong>Start Time:</strong> {{ selectedBooking?.startTime }}</p>
-    <p><strong>End Time:</strong> {{ selectedBooking?.endTime }}</p>
-    <p><strong>Amount:</strong> {{ selectedBooking?.amount }}</p>
-    <p><strong>Status:</strong> {{ selectedBooking?.status }}</p>
+  <div class="modal-overlay">
+    <div class="modal">
+      <h3>{{ selectedBooking?.vehicleModel }}</h3>
+      <p><strong>Owner:</strong> {{ selectedBooking?.ownerName }}</p>
+      <p><strong>Start Time:</strong> {{ selectedBooking?.startTime }}</p>
+      <p><strong>End Time:</strong> {{ selectedBooking?.endTime }}</p>
+      <p><strong>Amount:</strong> {{ selectedBooking?.amount }}</p>
+      <p><strong>Status:</strong> {{ selectedBooking?.status }}</p>
 
-    <div class="image-gallery" *ngIf="selectedBooking?.images?.length">
-      <h4>Images:</h4>
-      <div class="gallery">
-        <img
-          *ngFor="let img of selectedBooking?.images"
-          [src]="img"
-          alt="Vehicle image"
-        />
+      <div class="image-gallery" *ngIf="selectedBooking?.images?.length">
+        <h4>Images:</h4>
+        <div class="gallery">
+          <img
+            *ngFor="let img of selectedBooking?.images"
+            [src]="img"
+            alt="Vehicle image"
+          />
+        </div>
       </div>
-    </div>
 
-    <div class="modal-actions">
-      <button class="btn close-btn" (click)="closeModal()">Close</button>
+      <div class="modal-actions">
+        <button class="btn close-btn" (click)="closeModal()">Close</button>
+      </div>
     </div>
   </div>
 </div>
+<!-- Rating Modal -->
+<div *ngIf="showRatingModal" class="modal-overlay">
+  <div class="modal rating-modal">
+    <h3>Rate {{ rateTargetBooking?.vehicleModel }}</h3>
+    <p><strong>Owner:</strong> {{ rateTargetBooking?.ownerName }}</p>
+
+    <div class="star-picker">
+      <span
+        *ngFor="let s of [1, 2, 3, 4, 5]"
+        (click)="selectRating(s)"
+        class="star-wrapper"
+      >
+        <i class="star" [class.filled]="s <= ratingSelected">★</i>
+      </span>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn primary" (click)="submitRating()">Submit</button>
+      <button class="btn close-btn" (click)="closeRatingModal()">Cancel</button>
+    </div>
+  </div>
 </div>
 
 <app-footer></app-footer>

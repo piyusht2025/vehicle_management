@@ -49,6 +49,12 @@ public class Vehicle {
     @JsonIgnoreProperties("vehicle")
     private List<VehicleImage> images = new ArrayList<>();
 
+    @Column(name = "avg_rating")
+    private Double avgRating = 0.0;
+
+    @Column(name = "rating_count")
+    private Integer ratingCount = 0;
+
     @Override
     public String toString() {
         return "Vehicle{id=" + id + ", brand=" + brand + ", model=" + model + ", registrationNo=" + registrationNo + "}";

@@ -34,7 +34,6 @@ export class BookingListComponent {
         this.bookings = data;
         this.filteredBookings = [...this.bookings];
         this.applyFilters();
-        console.log(this.filteredBookings);
       },
       error: (err) => console.error('Error loading bookings:', err),
     });
@@ -73,13 +72,10 @@ export class BookingListComponent {
   }
 
   viewBooking(b: any): void {
-    console.log('Hello');
 
     this.selectedBooking = b;
-    console.log(this.selectedBooking);
 
     this.showModal = true;
-    console.log(this.showModal);
   }
 
   closeModal(): void {

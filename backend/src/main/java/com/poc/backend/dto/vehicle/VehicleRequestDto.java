@@ -20,4 +20,5 @@ public class VehicleRequestDto {
     private Double pricePerDay;
     private Boolean available;
     private List<String> images;
+    private Boolean active;
 }

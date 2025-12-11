@@ -1,7 +1,7 @@
 package com.poc.backend.service;
 
-import com.poc.backend.dto.booking.BookingRequestDto;
-import com.poc.backend.dto.booking.BookingResponseDto;
+import com.poc.backend.dto.booking.*;
+import com.poc.backend.dto.vehicle.TopVehicleDto;
 import com.poc.backend.entity.*;
 import com.poc.backend.exception.ResourceNotFoundException;
 import com.poc.backend.mapper.BookingMapper;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -195,5 +196,104 @@ public class BookingService {
                 .orElseThrow(()->new ResourceNotFoundException("Booking not found"));
 
         return booking.getVehicle().getOwner().getId().equals(ownerId);
+    }
+
+    public MonthlyEarningsDto getMonthlyEarnings(Long ownerId) {
+        List<Object[]> data = bookingRepo.findMonthlyEarnings(ownerId);
+
+        List<String> months = new ArrayList<>();
+        List<Double> earnings = new ArrayList<>();
+
+        for (Object[] row : data) {
+            months.add((String) row[0]);
+            earnings.add(((Number) row[1]).doubleValue());
+        }
+
+        MonthlyEarningsDto dto = new MonthlyEarningsDto();
+        dto.setMonths(months);
+        dto.setEarnings(earnings); 
+
+        return dto;
+    }
+
+    public MonthlyEarningsDto getMonthlyEarnings() {
+        List<Object[]> data = bookingRepo.findMonthlyEarnings();
+
+        List<String> months = new ArrayList<>();
+        List<Double> earnings = new ArrayList<>();
+
+        for (Object[] row : data) {
+            months.add((String) row[0]);
+            earnings.add(((Number) row[1]).doubleValue());
+        }
+
+        MonthlyEarningsDto dto = new MonthlyEarningsDto();
+        dto.setMonths(months);
+        dto.setEarnings(earnings);
+
+        return dto;
+    }
+
+    public List<RevenuePerVehicleDto> getRevenuePerVehicleByOwnerId(Long id) {
+        List<Object[]> result = bookingRepo.getRevenuePerVehicle(id);
+        return result.stream().map(row -> {
+            RevenuePerVehicleDto dto = new RevenuePerVehicleDto();
+            dto.setVehicleName((String) row[0]);
+            dto.setRevenue(String.valueOf(row[1]));
+            return dto;
+        }).toList();
+    }
+
+    public TotalRevenueDto getTotalRevenue() {
+        Object[] revenue=bookingRepo.getTotalRevenue();
+        Object[] vehicle=vehicleRepo.getTotalVehicles();
+        TotalRevenueDto dto=new TotalRevenueDto();
+        dto.setTotalRevenue(revenue[0].toString());
+        dto.setTotalVehicles(vehicle[0].toString());
+        return dto;
+    }
+
+    public List<TopVehicleDto> getTopRevenueVehicles() {
+        Pageable top3 = PageRequest.of(0, 3);
+        return bookingRepo.getTopRevenueVehicles(top3);
+    }
+
+    @Transactional
+    public void rateVehicle(Long bookingId, Integer rating) {
+        // validate rating range
+        if (rating == null || rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("Rating must be between 1 and 5");
+        }
+
+        Booking booking = bookingRepo.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+
+        if (!"COMPLETED".equalsIgnoreCase(booking.getStatus().getName())) {
+            throw new IllegalStateException("Can only rate vehicle after booking is COMPLETED.");
+        }
+
+        booking.setVehicleRatingByRenter(rating);
+        booking.setUpdatedAt(LocalDateTime.now());
+        bookingRepo.save(booking);
+
+    }
+
+    @Transactional
+    public void rateRenter(Long bookingId, Integer rating) {
+        if (rating == null || rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("Rating must be between 1 and 5");
+        }
+
+        Booking booking = bookingRepo.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+
+        if (!"COMPLETED".equalsIgnoreCase(booking.getStatus().getName())) {
+            throw new IllegalStateException("Can only rate renter after booking is COMPLETED.");
+        }
+
+        booking.setRenterRatingByOwner(rating);
+        booking.setUpdatedAt(LocalDateTime.now());
+        bookingRepo.save(booking);
+
     }
 }

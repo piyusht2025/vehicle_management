@@ -46,7 +46,7 @@
             <button class="btn view-btn" (click)="viewVehicle(v)"> View</button>
             <button class="btn approve-btn" *ngIf="v.status==='REVIEW_PENDING'"(click)="approveVehicle(v.id)"  >Approve</button>
             <button class="btn reject-btn" *ngIf="v.status==='REVIEW_PENDING'"> Reject</button>
-            <button class="btn delete-btn"> Delete</button>
+            <button class="btn delete-btn" *ngIf="v.status!=='REVIEW_PENDING'" (click)="deleteVehicle(v.id)"> Delete</button>
           </td>
         </tr>
         <tr *ngIf="!vehicles || vehicles.length === 0">
@@ -59,7 +59,6 @@
 </div>
 <div class="modal-overlay" *ngIf="showModal">
   <div class="modal">
-    <h3>Hello</h3>
     <h3>{{ selectedVehicle?.brand }} {{ selectedVehicle?.model }}</h3>
     <p><strong>Owner:</strong> {{ selectedVehicle?.ownerName }}</p>
     <p><strong>Type:</strong> {{ selectedVehicle?.type }}</p>

@@ -30,6 +30,8 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LandingComponent } from './components/landing/landing.component';
+import { NgChartsModule } from 'ng2-charts';
+import { AdminAnalyticsComponent } from './pages/admin/admin-analytics/admin-analytics.component';
 
 
 export function tokenGetter() {
@@ -57,9 +59,11 @@ export function tokenGetter() {
     OwnerDashboardComponent,
     LoginComponent,
     RegisterComponent,
-    LandingComponent
+    LandingComponent,
+    AdminAnalyticsComponent
   ],
   imports: [
+    NgChartsModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
@@ -67,12 +71,12 @@ export function tokenGetter() {
     ReactiveFormsModule,
     FormsModule,
 
-    JwtModule.forRoot({
-      config: {
-        tokenGetter: tokenGetter,
-        allowedDomains: ['localhost:8092'],
-      }
-    })
+    // JwtModule.forRoot({
+    //   config: {
+    //     tokenGetter: tokenGetter,
+    //     allowedDomains: ['localhost:8092'],
+    //   }
+    // })
   ],
   providers: [
     AuthService,

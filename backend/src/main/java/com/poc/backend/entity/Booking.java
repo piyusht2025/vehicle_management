@@ -21,6 +21,11 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "status")
     private BookingStatus status;
+    @Column(name = "renter_rating_by_owner")
+    private Integer renterRatingByOwner;
+
+    @Column(name = "vehicle_rating_by_renter")
+    private Integer vehicleRatingByRenter;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Double amount;

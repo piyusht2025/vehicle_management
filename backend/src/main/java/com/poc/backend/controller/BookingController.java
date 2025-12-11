@@ -1,7 +1,6 @@
 package com.poc.backend.controller;
 
-import com.poc.backend.dto.booking.BookingRequestDto;
-import com.poc.backend.dto.booking.BookingResponseDto;
+import com.poc.backend.dto.booking.*;
 import com.poc.backend.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,7 @@ import java.util.List;
 
 @Controller
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("api/booking")
 public class BookingController {
     @Autowired
@@ -65,5 +64,31 @@ public class BookingController {
         return ResponseEntity.ok("Payment successful & booking confirmed.");
     }
 
+    @GetMapping("/owner/{id}/monthly-earnings")
+    @PreAuthorize("hasRole('OWNER') and @bookingService.isVehicleOwnerForBooking(#id, principal.id)")
+    public ResponseEntity<MonthlyEarningsDto> getMonthlyEarnings(@PathVariable Long id) {
+        return ResponseEntity.ok(bookingService.getMonthlyEarnings(id));
+    }
 
+
+
+    @GetMapping("owner/{id}/revenue")
+    @PreAuthorize("hasAnyRole('OWNER','ADMIN') and (#id==principal.id or hasRole('ADMIN'))")
+    public ResponseEntity<List<RevenuePerVehicleDto>> getRevenuePerVehicleByOwnerId(@PathVariable Long id) {
+        return new ResponseEntity<>(bookingService.getRevenuePerVehicleByOwnerId(id), HttpStatus.OK);
+    }
+
+    @PatchMapping("/{id}/rate-vehicle")
+    @PreAuthorize("isAuthenticated() and @bookingService.isBookingCreator(#id, principal.id)")
+    public ResponseEntity<String> rateVehicle(@PathVariable Long id, @RequestBody RatingRequest req) {
+        bookingService.rateVehicle(id, req.getRating());
+        return ResponseEntity.ok("Vehicle rated successfully.");
+    }
+
+    @PatchMapping("/{id}/rate-renter")
+    @PreAuthorize("hasRole('OWNER') and @bookingService.isVehicleOwnerForBooking(#id, principal.id)")
+    public ResponseEntity<String> rateRenter(@PathVariable Long id, @RequestBody RatingRequest req) {
+        bookingService.rateRenter(id, req.getRating());
+        return ResponseEntity.ok("Renter rated successfully.");
+    }
 }
