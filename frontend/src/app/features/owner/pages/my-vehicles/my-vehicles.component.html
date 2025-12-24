@@ -1,0 +1,93 @@
+<app-owner-header></app-owner-header>
+<div class="myvehicles-page">
+  <div class="page-header">
+    <h1>My Vehicles</h1>
+
+    <div class="controls">
+      <select [(ngModel)]="filterStatus" (change)="applyFilters()">
+        <option value="">All statuses</option>
+        <option value="AVAILABLE">Available</option>
+        <option value="NOT_AVAILABLE">Not Available</option>
+        <option value="MAINTENANCE">Maintenance</option>
+        <option value="BOOKED">Booked</option>
+      </select>
+
+      <input
+        type="text"
+        placeholder="Search by model/type..."
+        [(ngModel)]="searchText"
+        (input)="applyFilters()"
+      />
+    </div>
+  </div>
+
+  <div class="vehicle-list" *ngIf="vehicles && vehicles.length">
+    <article class="vehicle-card" *ngFor="let v of filteredVehicles">
+      <div class="left">
+        <img
+          [src]="getVehicleImage(v)"
+          alt="{{ v.model }}"
+          class="thumb"
+        />
+        <div class="meta">
+          <h3>{{ v.model }}</h3>
+          <p class="type">{{ v.type }}</p>
+          <p class="price">₹{{ v.pricePerHour }}/hour</p>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="status-row">
+          <span class="badge" [ngClass]="v.status.toLowerCase()">{{
+            v.status
+          }}</span>
+        </div>
+
+        <div class="actions">
+          <button class="btn view" (click)="viewVehicle(v)">View</button>
+
+          <button
+            class="btn available"
+            *ngIf="v.status === 'MAINTENANCE'"
+            (click)="makeAvailable(v)"
+          >
+            Make Available
+          </button>
+
+
+          <button class="btn maintenance" *ngIf="v.status === 'AVAILABLE'" (click)="markMaintenance(v)">
+            Maintenance
+          </button>
+        </div>
+      </div>
+    </article>
+  </div>
+
+
+</div>
+
+<div *ngIf="showModal" class="modal-overlay" (click)="closeModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h3>{{ selectedVehicle?.model }}</h3>
+    <p><strong>Type:</strong> {{ selectedVehicle?.type }}</p>
+    <p><strong>Price:</strong> ₹{{ selectedVehicle?.pricePerHour }}/hour</p>
+    <p><strong>Status:</strong> {{ selectedVehicle?.status }}</p>
+    <p><strong>Registration no:</strong> {{ selectedVehicle?.registrationNo }}</p>
+
+
+    <div class="image-gallery" *ngIf="selectedVehicle?.images?.length">
+      <h4>Images:</h4>
+      <div class="gallery">
+        <img
+          *ngFor="let img of selectedVehicle?.images"
+          [src]="img"
+          alt="Vehicle image"
+        />
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="close-btn" (click)="closeModal()">Close</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+<app-header></app-header>
+
+<div class="booking-container" *ngIf="!loading && vehicle">
+
+  <div class="left">
+    <img
+      [src]="getVehicleImage(vehicle)"
+      alt="{{ vehicle.brand }}"
+      class="vehicle-img"
+    />
+
+    <h2>{{ vehicle.brand }} {{ vehicle.model }}</h2>
+    <ul class="details">
+      <li><strong>Type:</strong> {{ vehicle.type }}</li>
+      <li><strong>Fuel:</strong> {{ vehicle.fuelType }}</li>
+      <li><strong>Transmission:</strong> {{ vehicle.transmission }}</li>
+      <li><strong>Seats:</strong> {{ vehicle.seat }}</li>
+      <li><strong>Status:</strong> {{ vehicle.status }}</li>
+    </ul>
+  </div>
+
+  <div class="right">
+    <h3>Booking Summary</h3>
+    <p><strong>Start Time:</strong> {{ startTime | date:'short' }}</p>
+    <p><strong>End Time:</strong> {{ endTime | date:'short' }}</p>
+    <p><strong>Days:</strong> {{ daysDiff }}</p>
+    <p><strong>Hours:</strong> {{ hoursDiff }}</p>
+
+    <div class="amount">
+      <h4>Total Amount:</h4>
+      <p class="total">₹{{ totalAmount }}</p>
+    </div>
+
+    <div class="actions">
+      <button *ngIf="!isConfirmed" class="btn book-btn" (click)="onBookVehicle()">Book Vehicle</button>
+      <button *ngIf="!isPaid && isWaiting" class="btn book-btn" (click)="onBookVehicle()">waiting</button>
+      <button *ngIf="!isWaiting && !isPaid && isConfirmed" class="btn pay-btn" (click)="onPayNow()">Pay Now</button>
+      <p *ngIf="isPaid" class="success">Booking Confirmed & Paid</p>
+    </div>
+  </div>
+</div>
+
+

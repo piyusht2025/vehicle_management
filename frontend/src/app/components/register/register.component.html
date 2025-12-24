@@ -17,7 +17,7 @@
       <option value="OWNER">Owner</option>
     </select>
 
-    <input type="text" *ngIf="role==='USER'" name="license" placeholder="License Number">
+    <input type="text" *ngIf="role==='USER'" [(ngModel)]="licenseNo" name="license" placeholder="License Number">
     <button type="submit" [disabled]="registerForm.invalid">Register</button>
 
     <p class="link">Already have an account?

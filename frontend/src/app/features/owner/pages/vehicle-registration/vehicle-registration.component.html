@@ -1,0 +1,71 @@
+<app-owner-header></app-owner-header>
+<div class="vehicle-registration-container">
+  <h2>Vehicle Registration</h2>
+  <form [formGroup]="vehicleForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label>Vehicle Type</label>
+      <select formControlName="type" id="fuel">
+        <option value="TWO WHEELER">Two Wheeler</option>
+        <option value="FOUR WHEELER">Four Wheeler</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Fuel Type</label>
+      <select formControlName="fuelType" id="fuel">
+        <option value="PETROL">Petrol</option>
+        <option value="DIESEL">Diesel</option>
+        <option value="ELECTRIC">Electric</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Brand</label>
+      <input formControlName="brand" />
+    </div>
+    <div class="form-group">
+      <label>Model</label>
+      <input formControlName="model" />
+    </div>
+
+    <div class="form-group">
+      <label>Registration No</label>
+      <input formControlName="registrationNo" />
+    </div>
+    <div class="form-group">
+      <label>Transmission</label>
+      <input formControlName="transmission" />
+    </div>
+    <div class="form-group">
+      <label>Seats</label>
+      <input formControlName="seat" type="number" />
+    </div>
+    <div class="form-group">
+      <label>city</label>
+      <select formControlName="city" id="city">
+        <option value="Gandhinagar">Gandhinagar</option>
+        <option value="Ahmedabad">Ahmedabad</option>
+        <option value="Surat">Surat</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Price per Hour</label>
+      <input formControlName="pricePerHour" type="number" />
+    </div>
+    <div class="form-group">
+      <label>Price per Day</label>
+      <input formControlName="pricePerDay" type="number" />
+    </div>
+     <div class="form-group">
+      <label>Upload Vehicle Images</label>
+      <input type="file" multiple (change)="onFileSelected($event)" />
+      <div class="preview-container" *ngIf="imagePreviews.length > 0">
+        <div class="preview" *ngFor="let img of imagePreviews">
+          <img [src]="img" alt="preview" />
+        </div>
+      </div>
+    </div>
+    <button type="submit" class="submit-btn">Register Vehicle</button>
+  </form>
+  <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+</div>

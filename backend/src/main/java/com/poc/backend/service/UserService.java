@@ -89,6 +89,15 @@ public class UserService {
         Pageable top3 = PageRequest.of(0, 3);
         return bookingRepo.getTopSpenders(top3);
     }
+
+    public void updateUserById(Long id , UserRequestDto dto) {
+        User user=userRepo.findById(id).orElseThrow(()->new ResourceNotFoundException("User not found to update "));
+        if (dto.getName() != null) user.setName(dto.getName());
+        if (dto.getEmail() != null) user.setEmail(dto.getEmail());
+        if (dto.getPhone() != null) user.setPhone(dto.getPhone());
+        if (dto.getLicenseNo() != null) user.setLicenseNo(dto.getLicenseNo());
+        userRepo.save(user);
+    }
 }
 
 

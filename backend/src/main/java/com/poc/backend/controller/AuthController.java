@@ -44,6 +44,7 @@ public class AuthController {
         u.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
         u.setRole(role);
         u.setActive(true);
+        u.setLicenseNo(userRequestDto.getLicenseNo());
         userRepo.save(u);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -61,7 +62,6 @@ public class AuthController {
 
         String accessToken = jwtUtil.generateAccessToken(userDetails);
         String refreshToken = jwtUtil.generateRefreshToken(userDetails);
-
 
         return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken, userDetails.getUsername()));
     }

@@ -2,36 +2,110 @@
 <app-owner-header *ngIf="role[0]==='ROLE_OWNER'"></app-owner-header>
 <div class="container py-5 d-flex justify-content-center">
   <div class="card profile-card shadow-sm">
-    <div class="p-4" >
-      <h5 class="fw-semibold mb-3">Profile Details</h5>
-      <ul  class="list-group list-group-flush mb-3">
-        <li class="list-group-item d-flex justify-content-between">
-          <span class="text-muted">Full Name</span>
-          <span>{{ user.name }}</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between">
-          <span class="text-muted">Email</span>
-          <span>{{ user.email }}</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between">
-          <span class="text-muted">Phone</span>
-          <span>{{ user.phone }}</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between">
-          <span class="text-muted">License</span>
-          <span>{{ user.licenseNo }}</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between">
-          <span class="text-muted">Status</span>
-          <span class="fw-bold"
-                [ngClass]="user.isActive ? 'text-success' : 'text-danger'">
-            {{ user.active ? 'Active' : 'Inactive' }}
-          </span>
-        </li>
-      </ul>
-      <!-- <button class="btn btn-primary w-100" routerLink="/profile/edit">
-        Edit Profile
-      </button> -->
+    <div class="p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-semibold mb-0">Profile Details</h5>
+        <button
+          class="btn btn-sm btn-outline-primary"
+          (click)="toggleEditMode()"
+          *ngIf="!isEditMode">
+          <i class="bi bi-pencil"></i> Edit
+        </button>
+      </div>
+
+      <div *ngIf="!isEditMode">
+        <ul class="list-group list-group-flush mb-3">
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">Full Name</span>
+            <span>{{ user.name }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">Email</span>
+            <span>{{ user.email }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">Phone</span>
+            <span>{{ user.phone || 'Not provided' }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">License</span>
+            <span>{{ user.licenseNo || 'Not provided' }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="text-muted">Status</span>
+            <span class="fw-bold"
+                  [ngClass]="user.active ? 'text-success' : 'text-danger'">
+              {{ user.active ? 'Active' : 'Inactive' }}
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <form [formGroup]="profileForm" (ngSubmit)="updateProfile()" *ngIf="isEditMode">
+        <div class="mb-3">
+          <label class="form-label text-muted">Full Name</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="name"
+            [class.is-invalid]="profileForm.get('name')?.invalid && profileForm.get('name')?.touched">
+          <div class="invalid-feedback" *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched">
+            Name is required
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-muted">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            formControlName="email" >
+          <small class="text-muted">Email cannot be changed</small>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-muted">Phone</label>
+          <input
+            type="tel"
+            class="form-control"
+            formControlName="phone"
+            placeholder="Enter phone number">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-muted">License Number</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="licenseNo"
+            placeholder="Enter license number">
+        </div>
+
+        <div class="alert alert-success" *ngIf="successMessage">
+          {{ successMessage }}
+        </div>
+
+        <div class="alert alert-danger" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </div>
+
+        <div class="d-flex gap-2">
+          <button
+            type="submit"
+            class="btn btn-primary flex-fill"
+            [disabled]="profileForm.invalid || isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+            {{ isLoading ? 'Saving...' : 'Save Changes' }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-secondary flex-fill"
+            (click)="cancelEdit()"
+            [disabled]="isLoading">
+            Cancel
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

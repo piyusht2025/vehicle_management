@@ -296,4 +296,11 @@ public class BookingService {
         bookingRepo.save(booking);
 
     }
+
+    public void completeBooking(Long id) {
+        Booking b = bookingRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Not found "));
+        BookingStatus status = bookingStatusRepo.findByName("COMPLETED").orElseThrow(()-> new ResourceNotFoundException("Not found "));
+        b.setStatus(status);
+        bookingRepo.save(b);
+    }
 }

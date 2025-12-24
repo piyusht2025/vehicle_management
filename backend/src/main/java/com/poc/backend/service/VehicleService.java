@@ -42,7 +42,7 @@ public class VehicleService {
     @Transactional
     public VehicleResponseDto addVehicle(VehicleRequestDto dto) {
         Vehicle vehicle = vehicleMapper.toEntity(dto);
-        vehicle.setStatus(vehicleStatusRepo.findByName("REVIEW_PENDING").orElseThrow(() -> new ResourceNotFoundException("Status not found")));
+        vehicle.setStatus(vehicleStatusRepo.findByName("APPROVAL_PENDING").orElseThrow(() -> new ResourceNotFoundException("Status not found")));
         vehicle = vehicleRepo.save(vehicle);
         List<VehicleImage> vehicleImage = vehicleMapper.mapImages(vehicle, dto.getImages());
         List<VehicleImage> savedVehicleImages = vehicleImageRepo.saveAll(vehicleImage);

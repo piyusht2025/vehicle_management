@@ -38,14 +38,14 @@ public class BookingStatusScheduler {
 
         List<Booking> expiredBookings = bookingRepo.findExpiredBookings(now);
 
-        BookingStatus completed = bookingStatusRepo.findByName("COMPLETED")
-                .orElseThrow(() -> new RuntimeException("COMPLETED status missing"));
+        BookingStatus underReview = bookingStatusRepo.findByName("UNDER_REVIEW")
+                .orElseThrow(() -> new RuntimeException("review status missing"));
 
         VehicleStatus reviewPending = vehicleStatusRepo.findByName("REVIEW_PENDING")
                 .orElseThrow(() -> new RuntimeException("REVIEW_PENDING status missing"));
 
         for (Booking b : expiredBookings) {
-            b.setStatus(completed);
+            b.setStatus(underReview);
             bookingRepo.save(b);
             Vehicle v = b.getVehicle();
             v.setStatus(reviewPending);

@@ -17,6 +17,7 @@ public interface VehicleRepo extends JpaRepository<Vehicle, Long> {
 
 
     List<Vehicle> findByOwnerId(Long id);
+
     @Query("SELECT v from Vehicle v where v.active=true")
     List<Vehicle> findAllActive();
 

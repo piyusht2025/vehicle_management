@@ -1,0 +1,120 @@
+<app-owner-header></app-owner-header>
+<div class="mybookings-page">
+  <div class="page-header">
+    <h1>My Bookings</h1>
+
+    <div class="controls">
+      <select [(ngModel)]="filterStatus" (change)="applyFilters()">
+        <option value="">All statuses</option>
+        <option value="UNCONFIRMED">Unconfirmed</option>
+        <option value="ACCEPTED">Accepted</option>
+        <option value="CONFIRMED">Confirmed</option>
+        <option value="REJECTED">Rejected</option>
+        <option value="CANCELLED">Cancelled</option>
+        <option value="COMPLETED">Completed</option>
+      </select>
+
+      <input
+        type="text"
+        placeholder="Search by vehicle/owner..."
+        [(ngModel)]="searchText"
+        (input)="applyFilters()"
+      />
+    </div>
+  </div>
+
+  <div class="booking-list" *ngIf="bookings && bookings.length">
+    <article class="booking-card" *ngFor="let b of filteredBookings">
+      <div class="left">
+        <div class="meta">
+          <h3>{{ b.vehicleModel }}</h3>
+          <!-- <p class="owner">Owner: {{ b.ownerName }}</p> -->
+          <p class="when">
+            <strong>{{ b.startTime | date : "short" }}</strong>
+            &nbsp;→&nbsp;
+            <strong>{{ b.endTime | date : "short" }}</strong>
+          </p>
+          <p class="amount">₹{{ b.amount }}</p>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="status-row">
+          <span class="badge" [ngClass]="b.status.toLowerCase()">{{
+            b.status
+          }}</span>
+        </div>
+
+        <div class="actions">
+          <button class="btn view" (click)="viewBooking(b)">View</button>
+
+          <button
+            class="btn cancel"
+            *ngIf="b.status === 'UNCONFIRMED'"
+            (click)="rejectBooking(b)"
+          >
+            Reject
+          </button>
+          <button
+            class="btn accept"
+            *ngIf="b.status === 'UNCONFIRMED'"
+            (click)="acceptBooking(b)"
+          >
+            Accept
+          </button>
+
+          <button
+            class="btn complete"
+            *ngIf="
+              b.status === 'UNDER_REVIEW' &&
+              b.vehicleStatus === 'REVIEW_PENDING'
+            "
+            (click)="markAvailable(b)"
+          >
+            Mark as Available
+          </button>
+
+          <button
+            class="btn maintenance"
+            *ngIf="
+              b.status === 'UNDER_REVIEW' &&
+              b.vehicleStatus === 'REVIEW_PENDING'
+            "
+            (click)="markMaintenance(b)"
+          >
+            Mark as Maintenance
+          </button>
+        </div>
+      </div>
+      <div *ngIf="showModal">
+        <div class="modal-overlay">
+          <div class="modal">
+            <h3>{{ selectedBooking?.vehicleModel }}</h3>
+            <p><strong>Owner:</strong> {{ selectedBooking?.ownerName }}</p>
+            <p><strong>Start Time:</strong> {{ selectedBooking?.startTime }}</p>
+            <p><strong>End Time:</strong> {{ selectedBooking?.endTime }}</p>
+            <p><strong>Amount:</strong> {{ selectedBooking?.amount }}</p>
+            <p><strong>Status:</strong> {{ selectedBooking?.status }}</p>
+
+            <div class="image-gallery" *ngIf="selectedBooking?.images?.length">
+              <h4>Images:</h4>
+              <div class="gallery">
+                <img
+                  *ngFor="let img of selectedBooking?.images"
+                  [src]="img"
+                  alt="Vehicle image"
+                />
+              </div>
+            </div>
+
+            <div class="modal-actions">
+              <button class="btn close-btn" (click)="closeModal()">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>

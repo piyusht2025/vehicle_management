@@ -17,7 +17,7 @@ export class LoginComponent {
       .login({ email: this.email, password: this.password })
       .subscribe(
         () => {
-          const roles = this.authService.getUserRoles(); // <-- correct call
+          const roles = this.authService.getUserRoles();
           console.log(roles);
 
           if (roles.includes('ROLE_OWNER')) {

@@ -1,0 +1,58 @@
+CREATE OR REPLACE FUNCTION recompute_vehicle_rating()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  affected_vehicle_id bigint;
+  new_avg numeric;
+  new_count int;
+BEGIN
+  IF (TG_OP = 'UPDATE') THEN
+    IF (OLD.vehicle_id = NEW.vehicle_id)
+       AND (OLD.vehicle_rating_by_renter IS NOT DISTINCT FROM NEW.vehicle_rating_by_renter) THEN
+      RETURN NEW;
+    END IF;
+  END IF;
+
+  affected_vehicle_id := COALESCE(NEW.vehicle_id, OLD.vehicle_id);
+
+  IF affected_vehicle_id IS NULL THEN
+    RETURN COALESCE(NEW, OLD);
+  END IF;
+
+  SELECT
+    ROUND(AVG(vehicle_rating_by_renter)::numeric, 2),
+    COUNT(vehicle_rating_by_renter)
+  INTO new_avg, new_count
+  FROM bookings
+  WHERE vehicle_id = affected_vehicle_id
+    AND vehicle_rating_by_renter IS NOT NULL;
+
+  IF new_avg IS NULL THEN
+    new_avg := 0;
+    new_count := 0;
+  END IF;
+
+  UPDATE vehicles
+  SET avg_rating = new_avg,
+      rating_count = new_count,
+      updated_at = now()
+  WHERE id = affected_vehicle_id;
+
+  IF (TG_OP = 'DELETE') THEN
+    RETURN OLD;
+  ELSE
+    RETURN NEW;
+  END IF;
+END;
+$$;
+
+
+
+DROP TRIGGER IF EXISTS trg_recompute_vehicle_rating ON bookings;
+
+CREATE TRIGGER trg_recompute_vehicle_rating
+AFTER INSERT OR UPDATE OR DELETE ON bookings
+FOR EACH ROW
+EXECUTE FUNCTION recompute_vehicle_rating();
+

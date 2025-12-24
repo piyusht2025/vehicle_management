@@ -46,7 +46,7 @@ public class VehicleMapper {
     }
 
     public Vehicle toEntity(VehicleRequestDto dto) {
-        System.out.println(dto);
+//        System.out.println(dto);
         Vehicle vehicle = modelMapper.map(dto, Vehicle.class);
         vehicle.setId(null);
 

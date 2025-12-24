@@ -5,6 +5,7 @@ import { tap } from 'rxjs/operators';
 import { CookieService } from 'ngx-cookie-service';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 interface AuthRequest {
   email: string;
   password: string;
@@ -19,7 +20,7 @@ interface AuthResponse {
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8092/api/auth';
+  private apiUrl = `${environment.apiBaseUrl}/auth`;
   private accessTokenKey = 'accessToken';
   private refreshTokenKey = 'refreshToken';
   private jwtHelper = new JwtHelperService();
@@ -41,15 +42,12 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/register`, userData);
   }
   setTokens(accessToken: string, refreshToken: string) {
-    // you can set `secure: false` locally.
     this.cookieService.set(this.accessTokenKey, accessToken, {
       path: '/',
-      // secure: true,
       sameSite: 'Strict',
     });
     this.cookieService.set(this.refreshTokenKey, refreshToken, {
       path: '/',
-      // secure: true,
       sameSite: 'Strict',
     });
   }
@@ -72,7 +70,6 @@ export class AuthService {
   isLoggedIn(): boolean {
     const token = this.getToken();
     if (!token) return false;
-    // return !this.jwtHelper.isTokenExpired(token);
     return true;
   }
 
@@ -125,7 +122,6 @@ export class AuthService {
 
 
 
-  // --- call backend to refresh tokens ---
   refreshToken(): Observable<AuthResponse> {
     const refreshToken = this.getRefreshToken();
     if (!refreshToken) {
@@ -137,7 +133,6 @@ export class AuthService {
       .pipe(
         tap((res) => {
           console.log("refresh token auth service respone:", res)
-          // update stored tokens
           this.setTokens(res.accessToken, res.refreshToken);
         })
       );

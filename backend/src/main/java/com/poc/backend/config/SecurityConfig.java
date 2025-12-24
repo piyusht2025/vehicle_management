@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/uploads/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/vehicles/available", "/api/vehicles/{id}").permitAll()
+                        .requestMatchers( "/api/vehicles/available", "/api/vehicles/{id}").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/owner/**").hasAnyRole("OWNER","ADMIN")
                         .anyRequest().authenticated()

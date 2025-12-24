@@ -1,0 +1,81 @@
+<app-admin-header></app-admin-header>
+<div class="admin-vehicle-page">
+  <div>
+      <h2> Vehicle Management</h2>
+  </div>
+
+  <div class="filters">
+    <input type="text" placeholder="Search by brand or model..."
+    [(ngModel)]="searchText"
+    (input)="filterVehicle()" />
+    <select [(ngModel)]="filteredStatus" (change)="filterVehicle()">
+      <option value="">All Status</option>
+      <option value="APPROVAL_PENDING">Pending</option>
+      <option value="AVAILABLE">Available</option>
+      <option value="REJECTED">Rejected</option>
+    </select>
+    <button class="btn refresh-btn" (click)="refreshVehicles()"> Refresh </button>
+  </div>
+
+  <div class="table-container">
+    <table class="vehicle-table">
+      <thead>
+        <tr>
+          <th>Brand</th>
+          <th>Model</th>
+          <th>Owner</th>
+          <th>Type</th>
+          <th>Fuel</th>
+          <th>Price/Day</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let v of filteredVehicles">
+          <td>{{ v.brand }}</td>
+          <td>{{ v.model }}</td>
+          <td>{{ v.ownerName }}</td>
+          <td>{{ v.type }}</td>
+          <td>{{ v.fuelType }}</td>
+          <td>₹{{ v.pricePerDay }}</td>
+          <td>₹{{ v.pricePerDay }}</td>
+          <td>
+            <span class="status" [ngClass]="v.status.toLowerCase()">
+              {{ v.status }}
+            </span>
+          </td>
+          <td class="actions">
+            <button class="btn view-btn" (click)="viewVehicle(v)"> View</button>
+            <button class="btn approve-btn" *ngIf="v.status==='APPROVAL_PENDING'"(click)="approveVehicle(v.id)"  >Approve</button>
+            <button class="btn reject-btn" *ngIf="v.status==='APPROVAL_PENDING'"> Reject</button>
+            <button class="btn delete-btn" *ngIf="v.status!=='APPROVAL_PENDING'" (click)="deleteVehicle(v.id)"> Delete</button>
+          </td>
+        </tr>
+        <tr *ngIf="!vehicles || vehicles.length === 0">
+          <td colspan="9" class="no-data">No vehicles found</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+<div class="modal-overlay" *ngIf="showModal">
+  <div class="modal">
+    <h3>{{ selectedVehicle?.brand }} {{ selectedVehicle?.model }}</h3>
+    <p><strong>Owner:</strong> {{ selectedVehicle?.ownerName }}</p>
+    <p><strong>Type:</strong> {{ selectedVehicle?.type }}</p>
+    <p><strong>Fuel:</strong> {{ selectedVehicle?.fuelType }}</p>
+    <p><strong>Transmission:</strong> {{ selectedVehicle?.transmission }}</p>
+    <p><strong>Seats:</strong> {{ selectedVehicle?.seat }}</p>
+    <p><strong>Status:</strong> {{ selectedVehicle?.status }}</p>
+    <p><strong>Price (Day):</strong> ₹{{ selectedVehicle?.pricePerDay }}</p>
+    <p><strong>Price (Hour):</strong> ₹{{ selectedVehicle?.pricePerHour }}</p>
+
+
+
+    <div class="modal-actions">
+      <button class="btn close-btn" (click)="closeModal()">Close</button>
+    </div>
+  </div>
+</div>

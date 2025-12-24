@@ -13,8 +13,7 @@ import java.util.List;
 
 @Controller
 @RestController
-//@CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("api/booking")
+@RequestMapping("api/bookings")
 public class BookingController {
     @Autowired
     BookingService bookingService;
@@ -55,6 +54,12 @@ public class BookingController {
     public ResponseEntity<String> rejectBooking(@PathVariable Long id) {
         bookingService.rejectBooking(id);
         return ResponseEntity.ok("Booking rejected by owner.");
+    }
+    @PatchMapping("/{id}/mark-complete")
+    @PreAuthorize("hasRole('OWNER') and @bookingService.isVehicleOwnerForBooking(#id, principal.id)")
+    public ResponseEntity<String> completeBooking(@PathVariable Long id) {
+        bookingService.completeBooking(id);
+        return ResponseEntity.ok("Booking completed .");
     }
 
     @PatchMapping("/{id}/pay")

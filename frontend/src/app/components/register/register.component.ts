@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserService } from '../../core/services/user.service';
+import { UserService } from '../../features/user/services/user.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
@@ -14,7 +14,7 @@ export class RegisterComponent {
   email = '';
   phone = '';
   password = '';
-  license='';
+  licenseNo=null;
   role = '';
 
   constructor(private authService: AuthService, private router: Router) {}
@@ -25,7 +25,7 @@ export class RegisterComponent {
       email: this.email,
       phone: this.phone,
       password: this.password,
-      licenseNo:this.license,
+      licenseNo:this.licenseNo,
       role: this.role
     };
 

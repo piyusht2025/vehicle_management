@@ -1,0 +1,38 @@
+added a coloumn to display average rating of vehicle .
+added sql triggers to calculate new avg rating of vehicle whenever a new rating is added in bookings.
+sort the vehicles based on ratings and display it to users.
+Separated the admin , user and owner components and made it modular.
+
+Created a shared module for core components and services.
+added loading animation for smooth loading of pages .
+
+
+faced issue while changing the routes and components declaration while making the app modular .
+
+created my vehicles page for owners to view there vehicles and and make vehicles available after maintenance.
+
+
+separated all the UI logic and backend http logic from the components and added in services
+
+Fixed the pie char and barchart size and overal ui of admin panel.
+
+Fixed the logic for booking status update after booking complete . so that vehicles of recent bookings will be able to mark as available /maintenance
+
+
+added search filter  owners My booking page and user my bookings page
+
+
+1	"AVAILABLE"
+2	"RESERVED"
+3	"BOOKED"
+4	"MAINTENANCE"
+5	"REVIEW_PENDING"
+6	"NOT_AVAILABLE"
+7	"REJECTED"
+
+This is my vehicle status , give suggestion to update the vehicle stastus names for better compatibility .
+
+I want my vehicle to go under review status after booking is complted untill owner reviews it  .
+For the first time of vehicle registration i want my vehicle to also be under review until owner accepts it.
+
+only suggest me what all status shoul i keep or add .

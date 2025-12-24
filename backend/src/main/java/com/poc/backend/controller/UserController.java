@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-//@CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
     @Autowired
     UserService userService;
@@ -39,6 +38,13 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN') or #id == principal.id")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
         return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
+    }
+
+    @PatchMapping("/updateUserById/{id}")
+    @PreAuthorize("hasRole('ADMIN') or #id == principal.id")
+    public ResponseEntity<String> updateUserById(@PathVariable Long id,@RequestBody UserRequestDto userRequestDto) {
+        userService.updateUserById(id,userRequestDto);
+        return ResponseEntity.ok("Updated successfully");
     }
 
     @GetMapping("/{id}/dashboard-data")

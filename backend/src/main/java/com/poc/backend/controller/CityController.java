@@ -17,8 +17,6 @@ import java.util.List;
 @Controller
 @RestController
 @RequestMapping("api/city")
-@CrossOrigin(origins = "http://localhost:4200")
-//@PreAuthorize("ADMIN")
 public class CityController {
     @Autowired
     CityService cityService;
